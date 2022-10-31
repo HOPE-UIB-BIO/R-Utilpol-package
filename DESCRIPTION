@@ -1,0 +1,18 @@
+Package: RUtilpol
+Type: Package
+Title: R-Utilpol: Utility Functions For Package Development
+Version: 0.0.0.9000
+Maintainer: Ondrej Mottl <ondrej.mottl@gmail.com>
+Authors@R: person("Ondrej", "Mottl", email = "ondrej.mottl@gmail.com", role = c("aut","cre"))
+Description: R-Utilpol is an R package proving utility functions for package development.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Language: en-GB
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+VignetteBuilder: knitr
+Imports: 
+    assertthat,
+    magrittr,
+    usethis
