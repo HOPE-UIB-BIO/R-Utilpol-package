@@ -6,7 +6,8 @@
 #' @return `TRUE` if class match or error message
 #' @export
 check_class <-
-  function(data_source, sel_class) {
+  function(data_source,
+           sel_class) {
     parent_frame <-
       sys.parent()
 

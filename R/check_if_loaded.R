@@ -4,7 +4,9 @@
 #' @param silent Logical. Should there be no message?
 #' @export
 check_if_loaded <-
-  function(file_name, env = rlang::current_env, silent = FALSE) {
+  function(file_name,
+           env = rlang::current_env,
+           silent = FALSE) {
     check_class("file_name", "character")
 
     check_class("env", "environment")

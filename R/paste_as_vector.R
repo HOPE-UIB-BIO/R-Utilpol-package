@@ -4,7 +4,8 @@
 #' the `var_list`
 #' @export
 paste_as_vector <-
-  function(var_list, sep = "'") {
+  function(var_list,
+           sep = "'") {
     paste(
       paste0(sep, var_list, sep),
       collapse = ", "

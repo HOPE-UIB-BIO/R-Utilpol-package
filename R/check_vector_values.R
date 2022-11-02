@@ -5,7 +5,8 @@
 #' within the `data_source` vector and return error message
 #' @export
 check_vector_values <-
-  function(data_source, var_list) {
+  function(data_source,
+           var_list) {
     parent_frame <-
       sys.parent()
 
