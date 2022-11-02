@@ -1,15 +1,16 @@
 #' @title Helper function to extract data safely
-#' @param var Name of the variable
-#' @param dataset A list
+#' @param data_source_var Name of the data_source_variable
+#' @param data_source_list A list
 #' @export
 extract_var_from_list <-
-  function(var, dataset) {
-    check_class("var", "character")
+  function(data_source_var,
+           data_source_list) {
+    check_class("data_source_var", "character")
 
-    check_class("dataset", "list")
+    check_class("data_source_list", "list")
 
-    ifelse(var %in% names(dataset),
-      replace_null_with_na(dataset[[var]]),
+    ifelse(data_source_var %in% names(data_source_list),
+      replace_null_with_na(data_source_list[[data_source_var]]),
       NA
     )
   }

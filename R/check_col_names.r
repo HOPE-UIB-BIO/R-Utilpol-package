@@ -5,7 +5,8 @@
 #' within the `data_source` data.frame and return error message
 #' @export
 check_col_names <-
-  function(data_source, var_list) {
+  function(data_source,
+           var_list) {
     parent_frame <-
       sys.parent()
 
