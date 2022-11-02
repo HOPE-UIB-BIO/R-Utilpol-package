@@ -8,8 +8,10 @@
 get_latest_file <-
     function(file_name,
              dir) {
-        current_frame <- sys.nframe()
-        current_env <- sys.frame(which = current_frame)
+        current_frame <-
+            sys.nframe()
+        current_env <-
+            sys.frame(which = current_frame)
 
         check_class("file_name", "character")
 
@@ -27,7 +29,7 @@ get_latest_file <-
         if (
             is.na(file_format)
         ) {
-            stop("File does not have a format of 'rds' or 'csv'")
+            stop("File does not have a format of 'qs' or 'csv'")
         }
 
         # choose function based on the 'file_format'
@@ -44,10 +46,10 @@ get_latest_file <-
                             ")"
                         )
                 },
-                "rds" = {
+                "qs" = {
                     fc_command <-
                         paste0(
-                            "data_object <- readr::read_rds(",
+                            "data_object <- qs::qread(",
                             "'", dir, "/", file_last_name, "'",
                             ")"
                         )
