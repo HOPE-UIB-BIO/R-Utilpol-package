@@ -14,5 +14,9 @@ RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Imports: 
     assertthat,
+    digest,
     magrittr,
-    usethis
+    readr,
+    stringr,
+    usethis,
+    waldo
