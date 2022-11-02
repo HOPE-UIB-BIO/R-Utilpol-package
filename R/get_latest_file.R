@@ -16,7 +16,7 @@ get_latest_file <-
         check_class("dir", "character")
 
         file_last_name <-
-            get_latest_file_name(
+            get_latest_name_file(
                 file_name = file_name,
                 dir = dir
             )
