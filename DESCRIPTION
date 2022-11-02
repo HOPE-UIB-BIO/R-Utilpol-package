@@ -16,6 +16,7 @@ Imports:
     assertthat,
     digest,
     magrittr,
+    qs,
     readr,
     stringr,
     usethis,
