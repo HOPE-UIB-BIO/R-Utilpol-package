@@ -15,6 +15,7 @@ VignetteBuilder: knitr
 Imports: 
     assertthat,
     digest,
+    knitr,
     magrittr,
     qs,
     readr,
