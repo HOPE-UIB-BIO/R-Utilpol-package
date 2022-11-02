@@ -4,12 +4,12 @@
 \alias{extract_var_from_list}
 \title{Helper function to extract data safely}
 \usage{
-extract_var_from_list(var, dataset)
+extract_var_from_list(data_source_var, data_source_list)
 }
 \arguments{
-\item{var}{Name of the variable}
+\item{data_source_var}{Name of the data_source_variable}
 
-\item{dataset}{A list}
+\item{data_source_list}{A list}
 }
 \description{
 Helper function to extract data safely
