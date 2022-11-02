@@ -31,25 +31,37 @@ get_latest_file <-
         }
 
         # choose function based on the 'file_format'
-        sel_function <-
-            switch(file_format,
-                "rds" = "readr::read_rds",
-                "csv" = "readr::read_csv"
-            )
-
-        # create a function call
+        #   and create a function call
         fc_command <-
-            paste0(
-                "data_object <- ",
-                sel_function,
-                "(paste0(dir, " / ", file_last_name))"
+            switch(file_format,
+                "csv" = {
+                    # create a function call
+                    fc_command <-
+                        paste0(
+                            "data_object <- readr::read_csv(",
+                            "'", dir, "/", file_last_name, "',",
+                            "show_col_types = FALSE",
+                            ")"
+                        )
+                },
+                "rds" = {
+                    fc_command <-
+                        paste0(
+                            "data_object <- readr::read_rds(",
+                            "'", dir, "/", file_last_name, "'",
+                            ")"
+                        )
+                }
             )
 
         # evaluate function (assign the table)
-        eval(parse(text = fc_command), envir = current_env)
+        eval(
+            parse(text = fc_command),
+            envir = current_env
+        )
 
         usethis::ui_done(
-            paste("Automatically loaded file", file_name)
+            paste("Automatically loaded file", file_last_name)
         )
 
         return(data_object)
