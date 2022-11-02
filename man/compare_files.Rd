@@ -4,7 +4,7 @@
 \alias{compare_files}
 \title{Compare two datasets}
 \usage{
-compare_files(file_a, file_b, file_a_envir = NULL, file_b_envir = NULL)
+compare_files(file_a, file_b)
 }
 \arguments{
 \item{file_a}{The object A to compare}

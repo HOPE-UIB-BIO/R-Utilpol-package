@@ -5,9 +5,7 @@
 #' @return Logical. Are those file the same?
 compare_files <-
     function(file_a,
-             file_b,
-             file_a_envir = NULL,
-             file_b_envir = NULL) {
+             file_b) {
 
         # assume that data is different
         is_data_same <- FALSE
