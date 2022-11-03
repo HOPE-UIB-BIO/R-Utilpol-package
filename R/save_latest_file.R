@@ -1,5 +1,5 @@
 #' @title Save the newest version of data
-#' @param file_name Character. Name of the object to save in quotes
+#' @param file_to_save Object to save
 #' @param dir Character. Directory path
 #' @param current_date Character. Current date
 #' @param prefered_format Character. format to save as: "qs" or "csv"
@@ -15,7 +15,7 @@
 #' @export
 #' @seealso [qs::qsave()]
 save_latest_file <-
-    function(file_name,
+    function(file_to_save,
              dir,
              current_date = Sys.Date(),
              prefered_format = c("qs", "csv"),
@@ -26,13 +26,10 @@ save_latest_file <-
                  "uncompressed",
                  "archive"
              )) {
-        current_frame <- sys.nframe()
-        parent_frame <- sys.parent()
-
-        current_env <- sys.frame(which = current_frame)
-        parent_env <- sys.frame(which = parent_frame)
-
-        check_class("file_name", "character")
+        current_frame <-
+            sys.nframe()
+        current_env <-
+            sys.frame(which = current_frame)
 
         check_class("dir", "character")
 
@@ -63,8 +60,9 @@ save_latest_file <-
 
         preset <- match.arg(preset)
 
-        file_to_save <-
-            get(file_name, envir = parent_env)
+        file_name <-
+            substitute(file_to_save) %>%
+            deparse()
 
         assign("file_to_save", file_to_save, envir = current_env)
 
@@ -101,7 +99,8 @@ save_latest_file <-
         latest_file_name <-
             get_latest_name_file(
                 file_name = file_name,
-                dir = dir
+                dir = dir,
+                silent = TRUE
             )
 
         # if there is not a previous version of the file
