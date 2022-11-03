@@ -1,13 +1,15 @@
 #' @title Detect the newest version of the selected file
 #' @param file_name Name of the object to save in quotes
 #' @param dir Directory path
+#' @param silent. Logical. Should error message be ouput
 #' @return Object name of the most recent file
 #' @description look into the `dir` folder and find the version of the file
 #' with the most recent name
 #' @export
 get_latest_name_file <-
     function(file_name,
-             dir) {
+             dir,
+             silent = FALSE) {
         check_class("file_name", c("character", "logical"))
 
         check_class("dir", "character")
@@ -26,7 +28,11 @@ get_latest_name_file <-
         ) {
             newest_file <- NA
 
-            usethis::ui_oops("Selected file not present")
+            if (
+                silent == FALSE
+            ) {
+                usethis::ui_oops("Selected file not present")
+            }
         } else {
             file_list_selected_files <-
                 stringr::str_sort(file_list_selected_files, decreasing = TRUE)
