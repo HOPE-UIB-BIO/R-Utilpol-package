@@ -9,7 +9,7 @@
 #' Character. Used for "qs" only.
 #' One of "fast", "balanced", "high" (default), "archive",
 #'  "uncompressed". See `qs::qsave()`` for details
-#' @param use_sha Logical. If True, the file will be given SHA code in the 
+#' @param use_sha Logical. If True, the file will be given SHA code in the
 #' file name. when comapring files, if file has SHA code, the comparison can
 #' be done via SHA (without loading the file -> less memory).
 #' @return NULL
@@ -142,6 +142,9 @@ save_latest_file <-
                         file_sha_wrapper, ".qs",
                         "',compress = 'gz')"
                     )
+            },
+            {
+                stop("File does not have supported format.")
             }
         )
 
@@ -230,6 +233,9 @@ save_latest_file <-
                             "lastest_file <- readr::read_rds(",
                             "'", dir, "/", latest_file_name, "')"
                         )
+                },
+                {
+                    stop("File does not have supported format.")
                 }
             )
 
