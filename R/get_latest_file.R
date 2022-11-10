@@ -29,7 +29,7 @@ get_latest_file <-
         if (
             is.na(file_format)
         ) {
-            stop("File does not have a format of 'qs' or 'csv'")
+            stop("Cannot extract file format")
         }
 
         # choose function based on the 'file_format'
@@ -52,6 +52,17 @@ get_latest_file <-
                         "'", dir, "/", file_last_name, "'",
                         ")"
                     )
+            },
+            "rds" = {
+                fc_command <-
+                    paste0(
+                        "data_object <- readr::read_rds(",
+                        "'", dir, "/", file_last_name, "'",
+                        ")"
+                    )
+            },
+            {
+                stop("File does not have supported format.")
             }
         )
 
