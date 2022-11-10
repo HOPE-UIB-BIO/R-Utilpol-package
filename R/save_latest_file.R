@@ -138,7 +138,7 @@ save_latest_file <-
         }
 
         lastest_file_format <-
-            guess_format(latest_file_name)
+            get_format_from_name(latest_file_name)
 
         if (
             prefered_format != lastest_file_format

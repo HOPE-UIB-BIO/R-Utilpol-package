@@ -24,7 +24,7 @@ get_latest_file <-
             )
 
         file_format <-
-            guess_format(file_last_name)
+            get_format_from_name(file_last_name)
 
         if (
             is.na(file_format)
