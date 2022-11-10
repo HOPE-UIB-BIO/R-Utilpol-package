@@ -4,7 +4,7 @@
 \alias{get_latest_file}
 \title{Detect the newest version of the selected file and load it}
 \usage{
-get_latest_file(file_name, dir)
+get_latest_file(file_name, dir = here::here())
 }
 \arguments{
 \item{file_name}{Name of the object to save in quotes}

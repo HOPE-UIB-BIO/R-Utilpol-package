@@ -22,7 +22,7 @@
 #' @seealso [qs::qsave()] [readr::write_rds()]
 save_latest_file <-
     function(file_to_save,
-             dir,
+             dir = here::here(),
              current_date = Sys.Date(),
              prefered_format = c("rds", "qs", "csv"),
              preset = c(
@@ -139,7 +139,7 @@ save_latest_file <-
                     paste0(
                         "readr::write_rds(file_to_save, '", dir, "/",
                         file_name, "_", current_date,
-                        file_sha_wrapper, ".qs",
+                        file_sha_wrapper, ".rds",
                         "',compress = 'gz')"
                     )
             },
@@ -183,7 +183,7 @@ save_latest_file <-
                 paste0(
                     "The previous version of the file has",
                     "different format than the 'prefered_format'. ",
-                    "Will save as", prefered_format
+                    "Will save as ", prefered_format
                 )
             )
         }
@@ -199,9 +199,13 @@ save_latest_file <-
                 get_sha_from_name(latest_file_name)
 
             if (
-                file_sha == lastest_file_sha
+                is.na(lastest_file_sha) == FALSE
             ) {
-                is_the_lastest_same <- TRUE
+                if (
+                    file_sha == lastest_file_sha
+                ) {
+                    is_the_lastest_same <- TRUE
+                }
             }
         }
 
