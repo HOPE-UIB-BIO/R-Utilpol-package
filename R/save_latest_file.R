@@ -213,6 +213,10 @@ save_latest_file <-
         if (
             is_the_lastest_same == FALSE
         ) {
+
+             # assing NULL to prevent the R-CMD-check to fail
+            lastest_file <- NULL
+
             # construct the command to load the file
             switch(lastest_file_format,
                 "csv" = {

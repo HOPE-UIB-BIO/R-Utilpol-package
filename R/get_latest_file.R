@@ -45,6 +45,9 @@ get_latest_file <-
             stop("Cannot extract file format")
         }
 
+        # assing NULL to prevent the R-CMD-check to fail
+        data_object <- NULL
+
         # choose function based on the 'file_format'
         #   and create a function call
         switch(file_format,
