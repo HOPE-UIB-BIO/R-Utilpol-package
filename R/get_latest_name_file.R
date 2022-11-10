@@ -1,7 +1,7 @@
 #' @title Detect the newest version of the selected file
 #' @param file_name Name of the object to save in quotes
 #' @param dir Directory path
-#' @param silent. Logical. Should error message be ouput
+#' @param silent Logical. Should error message be ouput
 #' @return Object name of the most recent file
 #' @description look into the `dir` folder and find the version of the file
 #' with the most recent name
