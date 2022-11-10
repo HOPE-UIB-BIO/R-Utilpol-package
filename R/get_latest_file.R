@@ -7,7 +7,7 @@
 #' @export
 get_latest_file <-
     function(file_name,
-             dir) {
+             dir = here::here()) {
         current_frame <-
             sys.nframe()
         current_env <-
@@ -22,6 +22,19 @@ get_latest_file <-
                 file_name = file_name,
                 dir = dir
             )
+
+        if (
+            is.na(file_last_name)
+        ) {
+            stop(
+                paste(
+                    "Did not detect file",
+                    paste_as_vector(file_name),
+                    "in",
+                    paste_as_vector(dir)
+                )
+            )
+        }
 
         file_format <-
             get_format_from_name(file_last_name)

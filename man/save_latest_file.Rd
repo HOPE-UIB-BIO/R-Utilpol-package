@@ -6,7 +6,7 @@
 \usage{
 save_latest_file(
   file_to_save,
-  dir,
+  dir = here::here(),
   current_date = Sys.Date(),
   prefered_format = c("rds", "qs", "csv"),
   preset = c("high", "balanced", "fast", "uncompressed", "archive"),
