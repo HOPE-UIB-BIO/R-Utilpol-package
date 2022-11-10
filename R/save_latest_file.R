@@ -4,10 +4,14 @@
 #' present in the parent frame.
 #' @param dir Character. Directory path
 #' @param current_date Character. Current date
-#' @param prefered_format Character. format to save as: "qs" or "csv"
+#' @param prefered_format Character. format to save as: "rds", "qs" or "csv"
 #' @param preset
-#' Charatcer. One of "fast", "balanced", "high" (default), "archive",
+#' Character. Used for "qs" only.
+#' One of "fast", "balanced", "high" (default), "archive",
 #'  "uncompressed". See `qs::qsave()`` for details
+#' @param use_sha Logical. If True, the file will be given SHA code in the
+#' file name. when comapring files, if file has SHA code, the comparison can
+#' be done via SHA (without loading the file -> less memory).
 #' @return NULL
 #' @description Look into the folder and find the version of the file with
 #'  the most recent name. Compare the last saved file and selected file and
@@ -15,19 +19,20 @@
 #' Note that if file has changes and it has the same date as `current_date`,
 #'  the file will be overwritten (old file deleted)
 #' @export
-#' @seealso [qs::qsave()]
+#' @seealso [qs::qsave()] [readr::write_rds()]
 save_latest_file <-
     function(file_to_save,
-             dir,
+             dir = here::here(),
              current_date = Sys.Date(),
-             prefered_format = c("qs", "csv"),
+             prefered_format = c("rds", "qs", "csv"),
              preset = c(
                  "high",
                  "balanced",
                  "fast",
                  "uncompressed",
                  "archive"
-             )) {
+             ),
+             use_sha = FALSE) {
         current_frame <-
             sys.nframe()
         parent_frame <-
@@ -45,6 +50,7 @@ save_latest_file <-
         check_vector_values(
             "prefered_format",
             c(
+                "rds",
                 "qs",
                 "csv"
             )
@@ -52,20 +58,26 @@ save_latest_file <-
 
         prefered_format <- match.arg(prefered_format)
 
-        check_class("preset", "character")
+        if (
+            prefered_format == "qs"
+        ) {
+            check_class("preset", "character")
 
-        check_vector_values(
-            "preset",
-            c(
-                "high",
-                "balanced",
-                "fast",
-                "uncompressed",
-                "archive"
+            check_vector_values(
+                "preset",
+                c(
+                    "high",
+                    "balanced",
+                    "fast",
+                    "uncompressed",
+                    "archive"
+                )
             )
-        )
 
-        preset <- match.arg(preset)
+            preset <- match.arg(preset)
+        }
+
+        check_class("use_sha", "logical")
 
         if (
             "character" %in% class(file_to_save)
@@ -89,28 +101,52 @@ save_latest_file <-
         )
 
         if (
-            prefered_format == "csv"
-        ) {
-            save_command <-
-                paste0(
-                    "readr::write_csv(file_to_save, '", dir, "/",
-                    file_name, "_(", current_date, ").csv",
-                    "')"
-                )
-        } else if (
-            prefered_format == "qs"
+            use_sha == TRUE
         ) {
             file_sha <-
                 digest::sha1(file_to_save)
 
-            save_command <-
-                paste0(
-                    "qs::qsave(file_to_save, '", dir, "/",
-                    file_name, "_(", current_date, ")__",
-                    file_sha, ".qs",
-                    "',preset = '", preset, "')"
+            file_sha_wrapper <-
+                paste_as_vector(
+                    file_sha,
+                    "__"
                 )
+        } else {
+            file_sha_wrapper <- ""
         }
+
+        # create a function call
+        switch(prefered_format,
+            "csv" = {
+                save_command <-
+                    paste0(
+                        "readr::write_csv(file_to_save, '", dir, "/",
+                        file_name, "_", current_date, ".csv",
+                        "')"
+                    )
+            },
+            "qs" = {
+                save_command <-
+                    paste0(
+                        "qs::qsave(file_to_save, '", dir, "/",
+                        file_name, "_", current_date,
+                        file_sha_wrapper, ".qs",
+                        "',preset = '", preset, "')"
+                    )
+            },
+            "rds" = {
+                save_command <-
+                    paste0(
+                        "readr::write_rds(file_to_save, '", dir, "/",
+                        file_name, "_", current_date,
+                        file_sha_wrapper, ".rds",
+                        "',compress = 'gz')"
+                    )
+            },
+            {
+                stop("File does not have supported format.")
+            }
+        )
 
         latest_file_name <-
             get_latest_name_file(
@@ -138,7 +174,7 @@ save_latest_file <-
         }
 
         lastest_file_format <-
-            guess_format(latest_file_name)
+            get_format_from_name(latest_file_name)
 
         if (
             prefered_format != lastest_file_format
@@ -147,7 +183,7 @@ save_latest_file <-
                 paste0(
                     "The previous version of the file has",
                     "different format than the 'prefered_format'. ",
-                    "Will save as", prefered_format
+                    "Will save as ", prefered_format
                 )
             )
         }
@@ -155,48 +191,68 @@ save_latest_file <-
         # We neeed to compare with previous file
         is_the_lastest_same <- FALSE
 
+        # first compare with SHA is available
         if (
-            lastest_file_format == "qs" && prefered_format == "qs"
+            use_sha == TRUE
         ) {
             lastest_file_sha <-
                 get_sha_from_name(latest_file_name)
 
             if (
-                file_sha == lastest_file_sha
+                is.na(lastest_file_sha) == FALSE
             ) {
-                is_the_lastest_same <- TRUE
+                if (
+                    file_sha == lastest_file_sha
+                ) {
+                    is_the_lastest_same <- TRUE
+                }
             }
         }
 
+        # compare is SHA not available or not same
         if (
             is_the_lastest_same == FALSE
         ) {
+
+             # assing NULL to prevent the R-CMD-check to fail
+            lastest_file <- NULL
+
             # construct the command to load the file
-            if (
-                lastest_file_format == "csv"
-            ) {
-                load_command <-
-                    paste0(
-                        "lastest_file <- readr::read_csv(",
-                        "'", dir, "/", latest_file_name, "',",
-                        "show_col_types = FALSE",
-                        ")"
-                    )
-            } else if (
-                lastest_file_format == "qs"
-            ) {
-                load_command <-
-                    paste0(
-                        "lastest_file <- qs::qread(",
-                        "'", dir, "/", latest_file_name, "')"
-                    )
-            }
+            switch(lastest_file_format,
+                "csv" = {
+                    load_command <-
+                        paste0(
+                            "lastest_file <- readr::read_csv(",
+                            "'", dir, "/", latest_file_name, "',",
+                            "show_col_types = FALSE",
+                            ")"
+                        )
+                },
+                "qs" = {
+                    load_command <-
+                        paste0(
+                            "lastest_file <- qs::qread(",
+                            "'", dir, "/", latest_file_name, "')"
+                        )
+                },
+                "rds" = {
+                    load_command <-
+                        paste0(
+                            "lastest_file <- readr::read_rds(",
+                            "'", dir, "/", latest_file_name, "')"
+                        )
+                },
+                {
+                    stop("File does not have supported format.")
+                }
+            )
 
             # load the file (evaluate )
             eval(parse(text = load_command), envir = current_env)
 
             assign("lastest_file", lastest_file, envir = current_env)
 
+            # compare files
             is_the_lastest_same <-
                 compare_files(
                     file_a = file_to_save,

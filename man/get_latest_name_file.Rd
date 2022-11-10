@@ -11,7 +11,7 @@ get_latest_name_file(file_name, dir, silent = FALSE)
 
 \item{dir}{Directory path}
 
-\item{silent.}{Logical. Should error message be ouput}
+\item{silent}{Logical. Should error message be ouput}
 }
 \value{
 Object name of the most recent file

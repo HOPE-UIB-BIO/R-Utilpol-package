@@ -7,7 +7,7 @@
 #' @export
 get_latest_file <-
     function(file_name,
-             dir) {
+             dir = here::here()) {
         current_frame <-
             sys.nframe()
         current_env <-
@@ -23,38 +23,64 @@ get_latest_file <-
                 dir = dir
             )
 
+        if (
+            is.na(file_last_name)
+        ) {
+            stop(
+                paste(
+                    "Did not detect file",
+                    paste_as_vector(file_name),
+                    "in",
+                    paste_as_vector(dir)
+                )
+            )
+        }
+
         file_format <-
-            guess_format(file_last_name)
+            get_format_from_name(file_last_name)
 
         if (
             is.na(file_format)
         ) {
-            stop("File does not have a format of 'qs' or 'csv'")
+            stop("Cannot extract file format")
         }
+
+        # assing NULL to prevent the R-CMD-check to fail
+        data_object <- NULL
 
         # choose function based on the 'file_format'
         #   and create a function call
-        fc_command <-
-            switch(file_format,
-                "csv" = {
-                    # create a function call
-                    fc_command <-
-                        paste0(
-                            "data_object <- readr::read_csv(",
-                            "'", dir, "/", file_last_name, "',",
-                            "show_col_types = FALSE",
-                            ")"
-                        )
-                },
-                "qs" = {
-                    fc_command <-
-                        paste0(
-                            "data_object <- qs::qread(",
-                            "'", dir, "/", file_last_name, "'",
-                            ")"
-                        )
-                }
-            )
+        switch(file_format,
+            "csv" = {
+                # create a function call
+                fc_command <-
+                    paste0(
+                        "data_object <- readr::read_csv(",
+                        "'", dir, "/", file_last_name, "',",
+                        "show_col_types = FALSE",
+                        ")"
+                    )
+            },
+            "qs" = {
+                fc_command <-
+                    paste0(
+                        "data_object <- qs::qread(",
+                        "'", dir, "/", file_last_name, "'",
+                        ")"
+                    )
+            },
+            "rds" = {
+                fc_command <-
+                    paste0(
+                        "data_object <- readr::read_rds(",
+                        "'", dir, "/", file_last_name, "'",
+                        ")"
+                    )
+            },
+            {
+                stop("File does not have supported format.")
+            }
+        )
 
         # evaluate function (assign the table)
         eval(

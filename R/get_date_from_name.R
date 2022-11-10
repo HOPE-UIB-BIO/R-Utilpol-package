@@ -3,15 +3,11 @@
 #' @return Character with date
 get_date_from_name <-
     function(data_source) {
-        
         check_class("data_source", "character")
 
-        data_source %>%
-            stringr::str_replace(
-                ., ".*_\\(", ""
-            ) %>%
-            stringr::str_replace(
-                ., "\\)_.*", ""
-            ) %>%
+        stringr::str_extract(
+            data_source,
+            "[:digit:][:digit:][:digit:][:digit:]-[:digit:][:digit:]-[:digit:][:digit:]"
+        ) %>%
             return()
     }

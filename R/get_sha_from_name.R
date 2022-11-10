@@ -6,11 +6,8 @@ get_sha_from_name <-
         check_class("data_source", "character")
 
         data_source %>%
-            stringr::str_replace(
-                ., ".*__", ""
-            ) %>%
-            stringr::str_replace(
-                ., "\\..*", ""
+            stringr::str_extract(
+                ., "__.*__"
             ) %>%
             return()
     }

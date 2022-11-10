@@ -6,10 +6,11 @@
 \usage{
 save_latest_file(
   file_to_save,
-  dir,
+  dir = here::here(),
   current_date = Sys.Date(),
-  prefered_format = c("qs", "csv"),
-  preset = c("high", "balanced", "fast", "uncompressed", "archive")
+  prefered_format = c("rds", "qs", "csv"),
+  preset = c("high", "balanced", "fast", "uncompressed", "archive"),
+  use_sha = FALSE
 )
 }
 \arguments{
@@ -20,10 +21,15 @@ present in the parent frame.}
 
 \item{current_date}{Character. Current date}
 
-\item{prefered_format}{Character. format to save as: "qs" or "csv"}
+\item{prefered_format}{Character. format to save as: "rds", "qs" or "csv"}
 
-\item{preset}{Charatcer. One of "fast", "balanced", "high" (default), "archive",
+\item{preset}{Character. Used for "qs" only.
+One of "fast", "balanced", "high" (default), "archive",
 "uncompressed". See `qs::qsave()`` for details}
+
+\item{use_sha}{Logical. If True, the file will be given SHA code in the
+file name. when comapring files, if file has SHA code, the comparison can
+be done via SHA (without loading the file -> less memory).}
 }
 \description{
 Look into the folder and find the version of the file with
@@ -33,5 +39,5 @@ Note that if file has changes and it has the same date as \code{current_date},
 the file will be overwritten (old file deleted)
 }
 \seealso{
-\code{\link[qs:qsave]{qs::qsave()}}
+\code{\link[qs:qsave]{qs::qsave()}} \code{\link[readr:read_rds]{readr::write_rds()}}
 }
