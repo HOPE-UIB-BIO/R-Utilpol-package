@@ -34,27 +34,26 @@ get_latest_file <-
 
         # choose function based on the 'file_format'
         #   and create a function call
-        fc_command <-
-            switch(file_format,
-                "csv" = {
-                    # create a function call
-                    fc_command <-
-                        paste0(
-                            "data_object <- readr::read_csv(",
-                            "'", dir, "/", file_last_name, "',",
-                            "show_col_types = FALSE",
-                            ")"
-                        )
-                },
-                "qs" = {
-                    fc_command <-
-                        paste0(
-                            "data_object <- qs::qread(",
-                            "'", dir, "/", file_last_name, "'",
-                            ")"
-                        )
-                }
-            )
+        switch(file_format,
+            "csv" = {
+                # create a function call
+                fc_command <-
+                    paste0(
+                        "data_object <- readr::read_csv(",
+                        "'", dir, "/", file_last_name, "',",
+                        "show_col_types = FALSE",
+                        ")"
+                    )
+            },
+            "qs" = {
+                fc_command <-
+                    paste0(
+                        "data_object <- qs::qread(",
+                        "'", dir, "/", file_last_name, "'",
+                        ")"
+                    )
+            }
+        )
 
         # evaluate function (assign the table)
         eval(
