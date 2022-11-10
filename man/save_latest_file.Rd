@@ -13,7 +13,8 @@ save_latest_file(
 )
 }
 \arguments{
-\item{file_to_save}{Object to save}
+\item{file_to_save}{Object to save. Optionally, can be a character with the name of object
+present in the parent frame.}
 
 \item{dir}{Character. Directory path}
 
