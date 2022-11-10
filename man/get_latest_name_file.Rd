@@ -4,12 +4,14 @@
 \alias{get_latest_name_file}
 \title{Detect the newest version of the selected file}
 \usage{
-get_latest_name_file(file_name, dir)
+get_latest_name_file(file_name, dir, silent = FALSE)
 }
 \arguments{
 \item{file_name}{Name of the object to save in quotes}
 
 \item{dir}{Directory path}
+
+\item{silent.}{Logical. Should error message be ouput}
 }
 \value{
 Object name of the most recent file

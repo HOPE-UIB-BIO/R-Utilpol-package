@@ -5,7 +5,7 @@
 \title{Save the newest version of data}
 \usage{
 save_latest_file(
-  file_name,
+  file_to_save,
   dir,
   current_date = Sys.Date(),
   prefered_format = c("qs", "csv"),
@@ -13,7 +13,7 @@ save_latest_file(
 )
 }
 \arguments{
-\item{file_name}{Character. Name of the object to save in quotes}
+\item{file_to_save}{Object to save}
 
 \item{dir}{Character. Directory path}
 
