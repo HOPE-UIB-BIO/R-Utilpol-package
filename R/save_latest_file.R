@@ -1,5 +1,7 @@
 #' @title Save the newest version of data
-#' @param file_to_save Object to save
+#' @param file_to_save
+#' Object to save. Optionally, can be a character with the name of object
+#' present in the parent frame.
 #' @param dir Character. Directory path
 #' @param current_date Character. Current date
 #' @param prefered_format Character. format to save as: "qs" or "csv"
@@ -28,8 +30,13 @@ save_latest_file <-
              )) {
         current_frame <-
             sys.nframe()
+        parent_frame <-
+            sys.parent()
+
         current_env <-
             sys.frame(which = current_frame)
+        parent_env <-
+            sys.frame(which = parent_frame)
 
         check_class("dir", "character")
 
@@ -60,9 +67,18 @@ save_latest_file <-
 
         preset <- match.arg(preset)
 
-        file_name <-
-            substitute(file_to_save) %>%
-            deparse()
+        if (
+            "character" %in% class(file_to_save)
+        ) {
+            file_name <- file_to_save
+
+            file_to_save <-
+                get(file_name, envir = parent_env)
+        } else {
+            file_name <-
+                substitute(file_to_save) %>%
+                deparse()
+        }
 
         assign("file_to_save", file_to_save, envir = current_env)
 
