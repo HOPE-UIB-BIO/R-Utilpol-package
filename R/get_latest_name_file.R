@@ -1,6 +1,7 @@
 #' @title Detect the newest version of the selected file
 #' @param file_name Name of the object to save in quotes
 #' @param dir Directory path
+#' @param folder Logical. Is the selected file a folder?
 #' @param silent Logical. Should error message be ouput
 #' @return Object name of the most recent file
 #' @description look into the `dir` folder and find the version of the file
@@ -9,10 +10,15 @@
 get_latest_name_file <-
     function(file_name,
              dir = here::here(),
+             folder = FALSE,
              silent = FALSE) {
         check_class("file_name", c("character", "logical"))
 
         check_class("dir", "character")
+
+        check_class("folder", "logical")
+
+        check_class("silent", "logical")
 
         # helper functions
         check_vector_length <-
@@ -30,8 +36,16 @@ get_latest_name_file <-
                 }
             }
 
-        file_full_list <-
-            list.files(dir)
+        if (
+            folder == TRUE
+        ) {
+            file_full_list <-
+                list.dirs(dir)
+        } else {
+            file_full_list <-
+                list.files(dir)
+        }
+
 
         file_list_selected_files <-
             subset(

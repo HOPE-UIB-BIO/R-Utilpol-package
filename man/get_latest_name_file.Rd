@@ -4,12 +4,19 @@
 \alias{get_latest_name_file}
 \title{Detect the newest version of the selected file}
 \usage{
-get_latest_name_file(file_name, dir = here::here(), silent = FALSE)
+get_latest_name_file(
+  file_name,
+  dir = here::here(),
+  folder = FALSE,
+  silent = FALSE
+)
 }
 \arguments{
 \item{file_name}{Name of the object to save in quotes}
 
 \item{dir}{Directory path}
+
+\item{folder}{Logical. Is the selected file a folder?}
 
 \item{silent}{Logical. Should error message be ouput}
 }
