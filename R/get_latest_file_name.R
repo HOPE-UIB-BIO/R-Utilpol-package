@@ -7,7 +7,7 @@
 #' @description look into the `dir` folder and find the version of the file
 #' with the most recent name
 #' @export
-get_latest_name_file <-
+get_latest_file_name <-
     function(file_name,
              dir = here::here(),
              folder = FALSE,
