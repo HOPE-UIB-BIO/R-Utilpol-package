@@ -158,7 +158,7 @@ save_latest_file <-
         )
 
         latest_file_name <-
-            get_latest_name_file(
+            get_latest_file_name(
                 file_name = file_name,
                 dir = dir,
                 silent = TRUE

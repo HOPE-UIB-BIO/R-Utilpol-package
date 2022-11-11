@@ -4,7 +4,7 @@
 \alias{open_dir_if_not}
 \title{Testing any criteria and open folder with msg if not true}
 \usage{
-open_dir_if_not(..., env = parent.frame(), dir, msg)
+open_dir_if_not(..., env = parent.frame(), dir = here::here(), msg)
 }
 \arguments{
 \item{...}{Unnamed expressions that describe the conditions to be tested}
