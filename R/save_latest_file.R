@@ -104,7 +104,7 @@ save_latest_file <-
             use_sha == TRUE
         ) {
             file_sha <-
-                digest::sha1(file_to_save)
+                rlang::hash(file_to_save)
 
             file_sha_wrapper <-
                 paste_as_vector(
