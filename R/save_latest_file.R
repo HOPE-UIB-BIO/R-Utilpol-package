@@ -101,15 +101,6 @@ save_latest_file <-
             file_name <- current_file_name
         }
 
-        print("2")
-        print(file_to_save)
-
-        print("3")
-        print(current_file_name)
-
-        print("4")
-        print(file_name)
-
         assign("file_to_save", file_to_save, envir = current_env)
 
         check_if_loaded(
