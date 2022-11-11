@@ -2,6 +2,8 @@
 #' @param file_to_save
 #' Object to save. Optionally, can be a character with the name of object
 #' present in the parent frame.
+#' @param file_name Character. Name of the file use to saving. If missing,
+#' file will be named as `file_to_save`
 #' @param dir Character. Directory path
 #' @param current_date Character. Current date
 #' @param prefered_format Character. format to save as: "rds", "qs" or "csv"
@@ -22,6 +24,7 @@
 #' @seealso [qs::qsave()] [readr::write_rds()]
 save_latest_file <-
     function(file_to_save,
+             file_name,
              dir = here::here(),
              current_date = Sys.Date(),
              prefered_format = c("rds", "qs", "csv"),
@@ -82,15 +85,30 @@ save_latest_file <-
         if (
             "character" %in% class(file_to_save)
         ) {
-            file_name <- file_to_save
+            current_file_name <- file_to_save
 
             file_to_save <-
-                get(file_name, envir = parent_env)
+                get(current_file_name, envir = parent_env)
         } else {
-            file_name <-
+            current_file_name <-
                 substitute(file_to_save) %>%
                 deparse()
         }
+
+        if (
+            missing(file_name)
+        ) {
+            file_name <- current_file_name
+        }
+
+        print("2")
+        print(file_to_save)
+
+        print("3")
+        print(current_file_name)
+
+        print("4")
+        print(file_name)
 
         assign("file_to_save", file_to_save, envir = current_env)
 
@@ -214,7 +232,7 @@ save_latest_file <-
             is_the_lastest_same == FALSE
         ) {
 
-             # assing NULL to prevent the R-CMD-check to fail
+            # assing NULL to prevent the R-CMD-check to fail
             lastest_file <- NULL
 
             # construct the command to load the file

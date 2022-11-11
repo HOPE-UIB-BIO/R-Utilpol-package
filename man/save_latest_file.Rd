@@ -6,6 +6,7 @@
 \usage{
 save_latest_file(
   file_to_save,
+  file_name,
   dir = here::here(),
   current_date = Sys.Date(),
   prefered_format = c("rds", "qs", "csv"),
@@ -16,6 +17,9 @@ save_latest_file(
 \arguments{
 \item{file_to_save}{Object to save. Optionally, can be a character with the name of object
 present in the parent frame.}
+
+\item{file_name}{Character. Name of the file use to saving. If missing,
+file will be named as \code{file_to_save}}
 
 \item{dir}{Character. Directory path}
 
