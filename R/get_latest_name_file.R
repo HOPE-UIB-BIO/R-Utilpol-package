@@ -46,7 +46,6 @@ get_latest_name_file <-
                 list.files(dir)
         }
 
-
         file_list_selected_files <-
             subset(
                 file_full_list,
