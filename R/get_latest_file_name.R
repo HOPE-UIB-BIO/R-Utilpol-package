@@ -54,14 +54,17 @@ get_latest_file_name <-
 
         check_vector_length(file_list_selected_files)
 
+       date_apend <-
+            paste0(
+                ".",
+                get_date_from_name(file_list_selected_files),
+                ".*"
+            )
+
         file_list_striped <-
             stringr::str_replace(
-                file_list_selected_files,
-                paste0(
-                    "_",
-                    get_date_from_name(file_list_selected_files),
-                    ".*"
-                ),
+                string = file_list_selected_files,
+                pattern = date_apend, 
                 ""
             )
 
