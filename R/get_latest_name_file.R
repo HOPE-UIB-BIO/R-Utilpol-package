@@ -8,11 +8,27 @@
 #' @export
 get_latest_name_file <-
     function(file_name,
-             dir,
+             dir = here::here(),
              silent = FALSE) {
         check_class("file_name", c("character", "logical"))
 
         check_class("dir", "character")
+
+        # helper functions
+        check_vector_length <-
+            function(sel_vec) {
+                if (
+                    length(sel_vec) == 0
+                ) {
+                    if (
+                        silent == FALSE
+                    ) {
+                        usethis::ui_oops("Selected file not present")
+                    }
+
+                    stop_quietly()
+                }
+            }
 
         file_full_list <-
             list.files(dir)
@@ -23,22 +39,41 @@ get_latest_name_file <-
                 stringr::str_detect(file_full_list, file_name)
             )
 
+        check_vector_length(file_list_selected_files)
+
+        file_list_striped <-
+            stringr::str_replace(
+                file_list_selected_files,
+                paste0(
+                    "_",
+                    get_date_from_name(file_list_selected_files),
+                    ".*"
+                ),
+                ""
+            )
+
+        file_list_exact_names <-
+            subset(
+                file_list_selected_files,
+                file_list_striped == file_name
+            )
+
+        check_vector_length(file_list_exact_names)
+
         if (
-            length(file_list_selected_files) == 0
+            length(file_list_exact_names) == 1
         ) {
-            newest_file <- NA
-
-            if (
-                silent == FALSE
-            ) {
-                usethis::ui_oops("Selected file not present")
-            }
-        } else {
-            file_list_selected_files <-
-                stringr::str_sort(file_list_selected_files, decreasing = TRUE)
-
-            newest_file <- file_list_selected_files[1]
+            return(file_list_exact_names)
         }
 
-        return(newest_file)
+        if (
+            length(file_list_exact_names) > 1
+        ) {
+            file_list_exact_names <-
+                stringr::str_sort(file_list_exact_names, decreasing = TRUE)
+
+            newest_file <- file_list_exact_names[1]
+
+            return(newest_file)
+        }
     }
