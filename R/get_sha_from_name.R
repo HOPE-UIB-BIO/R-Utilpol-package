@@ -9,5 +9,11 @@ get_sha_from_name <-
             stringr::str_extract(
                 ., "__.*__"
             ) %>%
+            stringr::str_replace(
+                ., "__", ""
+            )  %>% 
+            stringr::str_replace(
+                ., "__", ""
+            )  %>% 
             return()
     }
