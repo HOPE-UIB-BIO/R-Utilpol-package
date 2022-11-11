@@ -15,6 +15,8 @@ output_heading <-
 
     check_vector_values("size", c("h1", "h2", "h3"))
 
+    size <- match.arg(size)
+
     sep_line <-
       switch(size,
         h1 = "#----------------------------------------------------------#",
