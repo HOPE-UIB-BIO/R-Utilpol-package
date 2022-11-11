@@ -7,7 +7,7 @@
 #' @export
 get_latest_name_folder <-
     function(folder_name,
-             dir) {
+             dir = here::here()) {
         check_class("folder_name", c("character", "logical"))
 
         check_class("dir", "character")

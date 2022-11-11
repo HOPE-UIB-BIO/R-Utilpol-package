@@ -4,7 +4,7 @@
 \alias{get_latest_name_folder}
 \title{Detect the newest version of the selected folder}
 \usage{
-get_latest_name_folder(folder_name, dir)
+get_latest_name_folder(folder_name, dir = here::here())
 }
 \arguments{
 \item{folder_name}{Name of the object to save in quotes}

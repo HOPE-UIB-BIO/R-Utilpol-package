@@ -8,7 +8,7 @@
 open_dir_if_not <-
   function(...,
            env = parent.frame(),
-           dir,
+           dir = here::here(),
            msg) {
     res <-
       assertthat::see_if(..., env = env, msg = msg)

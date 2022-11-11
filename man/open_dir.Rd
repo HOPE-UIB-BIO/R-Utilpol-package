@@ -4,7 +4,7 @@
 \alias{open_dir}
 \title{Open selected directory}
 \usage{
-open_dir(dir)
+open_dir(dir = here::here())
 }
 \arguments{
 \item{dir}{Path to the directory}

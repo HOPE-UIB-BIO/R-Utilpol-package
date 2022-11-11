@@ -3,7 +3,7 @@
 #' @return NULL
 #' @export
 open_dir <-
-  function(dir) {
+  function(dir = here::here()) {
     check_class("dir", "character")
 
     if (
