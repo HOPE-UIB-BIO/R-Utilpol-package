@@ -198,7 +198,10 @@ save_latest_file <-
         }
 
         # We neeed to compare with previous file
+        #   1. Assume that files are different
+        #   2. Pre-alocate that the SHA comparison did not happend
         is_the_lastest_same <- FALSE
+        sha_confirm <- FALSE
 
         # first compare with SHA is available
         if (
@@ -210,6 +213,8 @@ save_latest_file <-
             if (
                 is.na(lastest_file_sha) == FALSE
             ) {
+                sha_confirm <- TRUE
+
                 if (
                     file_sha == lastest_file_sha
                 ) {
@@ -218,11 +223,10 @@ save_latest_file <-
             }
         }
 
-        # compare is SHA not available or not same
+        # compare is SHA not available
         if (
-            is_the_lastest_same == FALSE
+           sha_confirm == FALSE
         ) {
-
             # assing NULL to prevent the R-CMD-check to fail
             lastest_file <- NULL
 
