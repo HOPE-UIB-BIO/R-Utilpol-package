@@ -31,7 +31,7 @@ get_latest_file_name <-
                     ) {
                         usethis::ui_oops("Selected file not present")
                     }
-                    return(NA_character_)
+                    return()
                 }
             }
 
@@ -91,4 +91,6 @@ get_latest_file_name <-
 
             return(newest_file)
         }
+
+        return(NA_character_)
     }
