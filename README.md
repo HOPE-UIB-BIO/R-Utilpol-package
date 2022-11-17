@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![CRAN
-status](https://www.r-pkg.org/badges/version/RUtilpol.png)](https://CRAN.R-project.org/package=RUtilpol)
+status](https://www.r-pkg.org/badges/version/RUtilpol)](https://CRAN.R-project.org/package=RUtilpol)
 [![R-CMD-check](https://github.com/HOPE-UIB-BIO/R-Utilpol-package/workflows/R-CMD-check/badge.svg)](https://github.com/HOPE-UIB-BIO/R-Utilpol-package/actions)
 <!-- badges: end -->
 
@@ -22,4 +22,7 @@ This package is currently under heavy development.
 You can install the development version of RUtilpol from
 [GitHub](https://github.com/) with:
 
-`r {r install, eval = FALSE} # install.packages("devtools") devtools::install_github("HOPE-UIB-BIO/R-Utilpol-package")`
+``` r
+# install.packages("devtools")
+devtools::install_github("HOPE-UIB-BIO/R-Utilpol-package")
+```
