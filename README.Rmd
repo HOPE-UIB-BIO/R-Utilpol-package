@@ -1,5 +1,5 @@
 ---
-output: gfm
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -30,7 +30,7 @@ This package is currently under heavy development.
 
 You can install the development version of RUtilpol from [GitHub](https://github.com/) with:
 
-``` r {r install, eval = FALSE}
+```{r install, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("HOPE-UIB-BIO/R-Utilpol-package")
 ```
