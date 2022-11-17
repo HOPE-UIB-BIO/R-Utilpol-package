@@ -39,10 +39,10 @@ get_latest_file_name <-
             folder == TRUE
         ) {
             file_full_list <-
-                list.dirs(dir)
+                list.dirs(dir, recursive = FALSE, full.names = FALSE)
         } else {
             file_full_list <-
-                list.files(dir)
+                list.files(dir, recursive = FALSE, full.names = FALSE)
         }
 
         file_list_selected_files <-
@@ -53,25 +53,31 @@ get_latest_file_name <-
 
         check_vector_length(file_list_selected_files)
 
-       date_apend <-
-            paste0(
-                ".",
-                get_date_from_name(file_list_selected_files),
-                ".*"
-            )
+        if (
+            folder == FALSE
+        ) {
+            date_apend <-
+                paste0(
+                    ".",
+                    get_date_from_name(file_list_selected_files),
+                    ".*"
+                )
 
-        file_list_striped <-
-            stringr::str_replace(
-                string = file_list_selected_files,
-                pattern = date_apend, 
-                ""
-            )
+            file_list_striped <-
+                stringr::str_replace(
+                    string = file_list_selected_files,
+                    pattern = date_apend,
+                    ""
+                )
 
-        file_list_exact_names <-
-            subset(
-                file_list_selected_files,
-                file_list_striped == file_name
-            )
+            file_list_exact_names <-
+                subset(
+                    file_list_selected_files,
+                    file_list_striped == file_name
+                )
+        } else {
+            file_list_exact_names <- file_list_selected_files
+        }
 
         check_vector_length(file_list_exact_names)
 
