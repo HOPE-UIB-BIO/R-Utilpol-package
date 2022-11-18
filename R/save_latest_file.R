@@ -19,7 +19,12 @@
 #'  the most recent name. Compare the last saved file and selected file and
 #'   save file if something changed since recent.
 #' Note that if file has changes and it has the same date as `current_date`,
-#'  the file will be overwritten (old file deleted)
+#'  the file will be overwritten (old file deleted).
+#' @details
+#' The functionality of previous iteration (`RFossilpol::util_save_if_latests`)
+#' is kept in the currentl version but will deprecated in the next version.
+#' Therefore, it is possible to use just `file_name` (in quotes) with the name
+#' of the object present in the parent frame without the `file_to_save`.
 #' @export
 #' @seealso [qs::qsave()] [readr::write_rds()]
 save_latest_file <-
@@ -81,6 +86,20 @@ save_latest_file <-
         }
 
         check_class("use_sha", "logical")
+
+        # There is a scenario that use will only use `file_name`
+        #   This is not prefered
+        if (
+            missing(file_to_save) && !missing(file_name)
+        ) {
+            output_warning(
+                msg = paste(
+                    "The functionality of only using `file_name`",
+                    "is not recomended and will deprecated in the next version"
+                )
+            )
+        }
+
 
         if (
             "character" %in% class(file_to_save)
@@ -225,7 +244,7 @@ save_latest_file <-
 
         # compare is SHA not available
         if (
-           sha_confirm == FALSE
+            sha_confirm == FALSE
         ) {
             # assing NULL to prevent the R-CMD-check to fail
             lastest_file <- NULL
