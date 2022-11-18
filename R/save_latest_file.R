@@ -1,9 +1,9 @@
 #' @title Save the newest version of data
-#' @param file_to_save
+#' @param object_to_save
 #' Object to save. Optionally, can be a character with the name of object
 #' present in the parent frame.
 #' @param file_name Character. Name of the file use to saving. If missing,
-#' file will be named as `file_to_save`
+#' file will be named as `object_to_save`
 #' @param dir Character. Directory path
 #' @param current_date Character. Current date
 #' @param prefered_format Character. format to save as: "rds", "qs" or "csv"
@@ -24,11 +24,11 @@
 #' The functionality of previous iteration (`RFossilpol::util_save_if_latests`)
 #' is kept in the currentl version but will deprecated in the next version.
 #' Therefore, it is possible to use just `file_name` (in quotes) with the name
-#' of the object present in the parent frame without the `file_to_save`.
+#' of the object present in the parent frame without the `object_to_save`.
 #' @export
 #' @seealso [qs::qsave()] [readr::write_rds()]
 save_latest_file <-
-    function(file_to_save,
+    function(object_to_save,
              file_name,
              dir = here::here(),
              current_date = Sys.Date(),
@@ -90,7 +90,7 @@ save_latest_file <-
         # There is a scenario that use will only use `file_name`
         #   This is not prefered
         if (
-            missing(file_to_save) && !missing(file_name)
+            missing(object_to_save) && !missing(file_name)
         ) {
             output_warning(
                 msg = paste(
@@ -102,15 +102,15 @@ save_latest_file <-
 
 
         if (
-            "character" %in% class(file_to_save)
+            "character" %in% class(object_to_save)
         ) {
-            current_file_name <- file_to_save
+            current_file_name <- object_to_save
 
-            file_to_save <-
+            object_to_save <-
                 get(current_file_name, envir = parent_env)
         } else {
             current_file_name <-
-                substitute(file_to_save) %>%
+                substitute(object_to_save) %>%
                 deparse()
         }
 
@@ -120,10 +120,10 @@ save_latest_file <-
             file_name <- current_file_name
         }
 
-        assign("file_to_save", file_to_save, envir = current_env)
+        assign("object_to_save", object_to_save, envir = current_env)
 
         check_if_loaded(
-            file_name = "file_to_save",
+            file_name = "object_to_save",
             env = current_env,
             silent = TRUE
         )
@@ -132,7 +132,7 @@ save_latest_file <-
             use_sha == TRUE
         ) {
             file_sha <-
-                rlang::hash(file_to_save)
+                rlang::hash(object_to_save)
 
             file_sha_wrapper <-
                 paste_as_vector(
@@ -148,7 +148,7 @@ save_latest_file <-
             "csv" = {
                 save_command <-
                     paste0(
-                        "readr::write_csv(file_to_save, '", dir, "/",
+                        "readr::write_csv(object_to_save, '", dir, "/",
                         file_name, "_", current_date, ".csv",
                         "')"
                     )
@@ -156,7 +156,7 @@ save_latest_file <-
             "qs" = {
                 save_command <-
                     paste0(
-                        "qs::qsave(file_to_save, '", dir, "/",
+                        "qs::qsave(object_to_save, '", dir, "/",
                         file_name, "_", current_date,
                         file_sha_wrapper, ".qs",
                         "',preset = '", preset, "')"
@@ -165,7 +165,7 @@ save_latest_file <-
             "rds" = {
                 save_command <-
                     paste0(
-                        "readr::write_rds(file_to_save, '", dir, "/",
+                        "readr::write_rds(object_to_save, '", dir, "/",
                         file_name, "_", current_date,
                         file_sha_wrapper, ".rds",
                         "',compress = 'gz')"
@@ -287,7 +287,7 @@ save_latest_file <-
             # compare files
             is_the_lastest_same <-
                 compare_files(
-                    file_a = file_to_save,
+                    file_a = object_to_save,
                     file_b = lastest_file
                 )
         }
