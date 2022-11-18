@@ -5,7 +5,7 @@
 \title{Save the newest version of data}
 \usage{
 save_latest_file(
-  file_to_save,
+  object_to_save,
   file_name,
   dir = here::here(),
   current_date = Sys.Date(),
@@ -15,11 +15,11 @@ save_latest_file(
 )
 }
 \arguments{
-\item{file_to_save}{Object to save. Optionally, can be a character with the name of object
+\item{object_to_save}{Object to save. Optionally, can be a character with the name of object
 present in the parent frame.}
 
 \item{file_name}{Character. Name of the file use to saving. If missing,
-file will be named as \code{file_to_save}}
+file will be named as \code{object_to_save}}
 
 \item{dir}{Character. Directory path}
 
@@ -40,7 +40,13 @@ Look into the folder and find the version of the file with
 the most recent name. Compare the last saved file and selected file and
 save file if something changed since recent.
 Note that if file has changes and it has the same date as \code{current_date},
-the file will be overwritten (old file deleted)
+the file will be overwritten (old file deleted).
+}
+\details{
+The functionality of previous iteration (\code{RFossilpol::util_save_if_latests})
+is kept in the currentl version but will deprecated in the next version.
+Therefore, it is possible to use just \code{file_name} (in quotes) with the name
+of the object present in the parent frame without the \code{object_to_save}.
 }
 \seealso{
 \code{\link[qs:qsave]{qs::qsave()}} \code{\link[readr:read_rds]{readr::write_rds()}}
