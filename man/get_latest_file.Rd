@@ -4,12 +4,14 @@
 \alias{get_latest_file}
 \title{Detect the newest version of the selected file and load it}
 \usage{
-get_latest_file(file_name, dir = here::here())
+get_latest_file(file_name, dir = here::here(), verbose = TRUE)
 }
 \arguments{
 \item{file_name}{Name of the object to save in quotes}
 
 \item{dir}{Directory path}
+
+\item{verbose}{Logical. Should there be output message?}
 }
 \value{
 Object of latest version of the \code{file_name}

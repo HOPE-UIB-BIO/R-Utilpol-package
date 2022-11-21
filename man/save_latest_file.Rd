@@ -11,7 +11,8 @@ save_latest_file(
   current_date = Sys.Date(),
   prefered_format = c("rds", "qs", "csv"),
   preset = c("high", "balanced", "fast", "uncompressed", "archive"),
-  use_sha = FALSE
+  use_sha = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ One of "fast", "balanced", "high" (default), "archive",
 \item{use_sha}{Logical. If True, the file will be given SHA code in the
 file name. when comapring files, if file has SHA code, the comparison can
 be done via SHA (without loading the file -> less memory).}
+
+\item{verbose}{Logical. Should there be output message?}
 }
 \description{
 Look into the folder and find the version of the file with

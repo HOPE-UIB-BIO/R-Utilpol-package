@@ -8,7 +8,7 @@ get_latest_file_name(
   file_name,
   dir = here::here(),
   folder = FALSE,
-  silent = FALSE
+  verbose = TRUE
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ get_latest_file_name(
 
 \item{folder}{Logical. Is the selected file a folder?}
 
-\item{silent}{Logical. Should error message be ouput}
+\item{verbose}{Logical. Should there be output error message?}
 }
 \value{
 Object name of the most recent file

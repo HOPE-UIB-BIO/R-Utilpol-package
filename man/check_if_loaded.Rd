@@ -4,14 +4,14 @@
 \alias{check_if_loaded}
 \title{Confirm that the selected file is present in selected environment}
 \usage{
-check_if_loaded(file_name, env = rlang::current_env, silent = FALSE)
+check_if_loaded(file_name, env = rlang::current_env, verbose = TRUE)
 }
 \arguments{
 \item{file_name}{Name of the selected file}
 
 \item{env}{The environment to test the presence of the file in}
 
-\item{silent}{Logical. Should there be no message?}
+\item{verbose}{Logical. Should there be output message?}
 }
 \description{
 Confirm that the selected file is present in selected environment
