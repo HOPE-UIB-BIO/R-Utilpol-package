@@ -145,12 +145,15 @@ save_latest_file <-
             file_sha_wrapper <- ""
         }
 
+        # add `/` at the end of dir if needed
+        dir <- add_slash_to_path(dir)
+
         # create a function call
         switch(prefered_format,
             "csv" = {
                 save_command <-
                     paste0(
-                        "readr::write_csv(object_to_save, '", dir, "/",
+                        "readr::write_csv(object_to_save, '", dir,
                         file_name, "_", current_date, ".csv",
                         "')"
                     )
@@ -158,7 +161,7 @@ save_latest_file <-
             "qs" = {
                 save_command <-
                     paste0(
-                        "qs::qsave(object_to_save, '", dir, "/",
+                        "qs::qsave(object_to_save, '", dir,
                         file_name, "_", current_date,
                         file_sha_wrapper, ".qs",
                         "',preset = '", preset, "')"
@@ -167,7 +170,7 @@ save_latest_file <-
             "rds" = {
                 save_command <-
                     paste0(
-                        "readr::write_rds(object_to_save, '", dir, "/",
+                        "readr::write_rds(object_to_save, '", dir,
                         file_name, "_", current_date,
                         file_sha_wrapper, ".rds",
                         "',compress = 'gz')"
@@ -267,7 +270,7 @@ save_latest_file <-
                     load_command <-
                         paste0(
                             "lastest_file <- readr::read_csv(",
-                            "'", dir, "/", latest_file_name, "',",
+                            "'", dir, latest_file_name, "',",
                             "show_col_types = FALSE",
                             ")"
                         )
@@ -276,14 +279,14 @@ save_latest_file <-
                     load_command <-
                         paste0(
                             "lastest_file <- qs::qread(",
-                            "'", dir, "/", latest_file_name, "')"
+                            "'", dir, latest_file_name, "')"
                         )
                 },
                 "rds" = {
                     load_command <-
                         paste0(
                             "lastest_file <- readr::read_rds(",
-                            "'", dir, "/", latest_file_name, "')"
+                            "'", dir, latest_file_name, "')"
                         )
                 },
                 {
@@ -325,7 +328,7 @@ save_latest_file <-
             ) {
                 file.remove(
                     paste0(
-                        dir, "/", latest_file_name
+                        dir, latest_file_name
                     )
                 )
             }

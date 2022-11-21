@@ -35,6 +35,8 @@ get_latest_file_name <-
                 }
             }
 
+        dir <- add_slash_to_path(dir)
+
         if (
             folder == TRUE
         ) {

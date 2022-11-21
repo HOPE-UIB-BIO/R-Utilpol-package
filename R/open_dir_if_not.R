@@ -22,6 +22,8 @@ open_dir_if_not <-
       )
       cat("\n")
 
+      dir <- add_slash_to_path(dir)
+
       # open the folder
       open_dir(dir)
 
