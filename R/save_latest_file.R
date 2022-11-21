@@ -14,6 +14,7 @@
 #' @param use_sha Logical. If True, the file will be given SHA code in the
 #' file name. when comapring files, if file has SHA code, the comparison can
 #' be done via SHA (without loading the file -> less memory).
+#' @param verbose Logical. Should there be output message?
 #' @return NULL
 #' @description Look into the folder and find the version of the file with
 #'  the most recent name. Compare the last saved file and selected file and
@@ -40,7 +41,8 @@ save_latest_file <-
                  "uncompressed",
                  "archive"
              ),
-             use_sha = FALSE) {
+             use_sha = FALSE,
+             verbose = TRUE) {
         current_frame <-
             sys.nframe()
         parent_frame <-
@@ -125,7 +127,7 @@ save_latest_file <-
         check_if_loaded(
             file_name = "object_to_save",
             env = current_env,
-            silent = TRUE
+            verbose = FALSE
         )
 
         if (
@@ -180,32 +182,42 @@ save_latest_file <-
             get_latest_file_name(
                 file_name = file_name,
                 dir = dir,
-                silent = TRUE
+                verbose = FALSE
             )
 
         # if there is not a previous version of the file
         if (
             is.na(latest_file_name)
         ) {
-            usethis::ui_done(
-                paste(
-                    "Have not find previous version of the file.",
-                    "Saving the file with",
-                    prefered_format, "format."
+            if (
+                verbose == TRUE
+            ) {
+                usethis::ui_done(
+                    paste(
+                        "Have not find previous version of the file.",
+                        "Saving the file with",
+                        prefered_format, "format."
+                    )
                 )
-            )
+            }
 
             eval(parse(text = save_command), envir = current_env)
 
             # stop the funtcion
-            return("Done")
+            if (
+                isTRUE(verbose)
+            ) {
+                return("Done")
+            } else {
+                return(NULL)
+            }
         }
 
         lastest_file_format <-
             get_format_from_name(latest_file_name)
 
         if (
-            prefered_format != lastest_file_format
+            prefered_format != lastest_file_format && isTRUE(verbose)
         ) {
             usethis::ui_info(
                 paste0(
@@ -296,9 +308,13 @@ save_latest_file <-
         if (
             is_the_lastest_same == FALSE
         ) {
-            usethis::ui_done(
-                "Found older file, overwriting it with new changes."
-            )
+            if (
+                isTRUE(verbose)
+            ) {
+                usethis::ui_done(
+                    "Found older file, overwriting it with new changes."
+                )
+            }
 
             latest_file_date <-
                 get_date_from_name(latest_file_name)
@@ -316,12 +332,31 @@ save_latest_file <-
 
             eval(parse(text = save_command), envir = current_env)
 
-            return("Done")
+            if (
+                isTRUE(verbose)
+            ) {
+                return("Done")
+            } else {
+                return(NULL)
+            }
         }
 
-        usethis::ui_info(
-            "Found older file but did not detect any changes. Not overwritting."
-        )
+        if (
+            isTRUE(verbose)
+        ) {
+            usethis::ui_info(
+                paste(
+                    "Found older file but did not detect any changes.",
+                    "Not overwritting."
+                )
+            )
+        }
 
-        return("Done")
+        if (
+            isTRUE(verbose)
+        ) {
+            return("Done")
+        } else {
+            return(NULL)
+        }
     }

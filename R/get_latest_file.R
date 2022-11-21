@@ -1,13 +1,15 @@
 #' @title Detect the newest version of the selected file and load it
 #' @param file_name Name of the object to save in quotes
 #' @param dir Directory path
+#' @param verbose Logical. Should there be output message?
 #' @return Object of latest version of the `file_name`
 #' @description Look into the folder `dir` and find the version of the file with
 #'  the most recent date and load it
 #' @export
 get_latest_file <-
     function(file_name,
-             dir = here::here()) {
+             dir = here::here(),
+             verbose = TRUE) {
         current_frame <-
             sys.nframe()
         current_env <-
@@ -26,14 +28,20 @@ get_latest_file <-
         if (
             is.na(file_last_name)
         ) {
-            stop(
-                paste(
-                    "Did not detect file",
-                    paste_as_vector(file_name),
-                    "in",
-                    paste_as_vector(dir)
+            if (
+                verbose == TRUE
+            ) {
+                stop(
+                    paste(
+                        "Did not detect file",
+                        paste_as_vector(file_name),
+                        "in",
+                        paste_as_vector(dir)
+                    )
                 )
-            )
+            } else {
+                stop_quietly()
+            }
         }
 
         file_format <-
@@ -42,7 +50,13 @@ get_latest_file <-
         if (
             is.na(file_format)
         ) {
-            stop("Cannot extract file format")
+            if (
+                verbose == TRUE
+            ) {
+                stop("Cannot extract file format")
+            } else {
+                stop_quietly()
+            }
         }
 
         # assing NULL to prevent the R-CMD-check to fail
@@ -88,9 +102,13 @@ get_latest_file <-
             envir = current_env
         )
 
-        usethis::ui_done(
-            paste("Automatically loaded file", file_last_name)
-        )
+        if (
+            verbose == TRUE
+        ) {
+            usethis::ui_done(
+                paste("Automatically loaded file", file_last_name)
+            )
+        }
 
         return(data_object)
     }
