@@ -6,6 +6,8 @@ open_dir <-
   function(dir = here::here()) {
     check_class("dir", "character")
 
+    dir <- add_slash_to_path(dir)
+
     if (
       .Platform["OS.type"] == "windows"
     ) {

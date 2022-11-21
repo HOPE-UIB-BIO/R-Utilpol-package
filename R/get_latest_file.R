@@ -59,6 +59,9 @@ get_latest_file <-
             }
         }
 
+        # add `/` at the end of dir if needed
+        dir <- add_slash_to_path(dir)
+
         # assing NULL to prevent the R-CMD-check to fail
         data_object <- NULL
 
@@ -70,7 +73,7 @@ get_latest_file <-
                 fc_command <-
                     paste0(
                         "data_object <- readr::read_csv(",
-                        "'", dir, "/", file_last_name, "',",
+                        "'", dir, file_last_name, "',",
                         "show_col_types = FALSE",
                         ")"
                     )
@@ -79,7 +82,7 @@ get_latest_file <-
                 fc_command <-
                     paste0(
                         "data_object <- qs::qread(",
-                        "'", dir, "/", file_last_name, "'",
+                        "'", dir, file_last_name, "'",
                         ")"
                     )
             },
@@ -87,7 +90,7 @@ get_latest_file <-
                 fc_command <-
                     paste0(
                         "data_object <- readr::read_rds(",
-                        "'", dir, "/", file_last_name, "'",
+                        "'", dir, file_last_name, "'",
                         ")"
                     )
             },
