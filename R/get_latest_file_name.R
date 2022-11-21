@@ -2,7 +2,7 @@
 #' @param file_name Name of the object to save in quotes
 #' @param dir Directory path
 #' @param folder Logical. Is the selected file a folder?
-#' @param silent Logical. Should error message be ouput
+#' @param verbose Logical. Should there be output error message?
 #' @return Object name of the most recent file
 #' @description look into the `dir` folder and find the version of the file
 #' with the most recent name
@@ -11,14 +11,14 @@ get_latest_file_name <-
     function(file_name,
              dir = here::here(),
              folder = FALSE,
-             silent = FALSE) {
+             verbose = TRUE) {
         check_class("file_name", c("character", "logical"))
 
         check_class("dir", "character")
 
         check_class("folder", "logical")
 
-        check_class("silent", "logical")
+        check_class("verbose", "logical")
 
         # helper functions
         check_vector_length <-
@@ -27,7 +27,7 @@ get_latest_file_name <-
                     length(sel_vec) == 0
                 ) {
                     if (
-                        silent == FALSE
+                        verbose == TRUE
                     ) {
                         usethis::ui_oops("Selected file not present")
                     }
