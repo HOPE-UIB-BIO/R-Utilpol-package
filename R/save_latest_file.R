@@ -41,7 +41,7 @@ save_latest_file <-
                  "uncompressed",
                  "archive"
              ),
-             use_sha = FALSE,
+             use_sha = TRUE,
              verbose = TRUE) {
         current_frame <-
             sys.nframe()

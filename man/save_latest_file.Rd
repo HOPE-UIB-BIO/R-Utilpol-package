@@ -11,7 +11,7 @@ save_latest_file(
   current_date = Sys.Date(),
   prefered_format = c("rds", "qs", "csv"),
   preset = c("high", "balanced", "fast", "uncompressed", "archive"),
-  use_sha = FALSE,
+  use_sha = TRUE,
   verbose = TRUE
 )
 }
