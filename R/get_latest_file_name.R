@@ -22,7 +22,7 @@ get_latest_file_name <-
 
         # helper functions
         check_vector_length <-
-            function(sel_vec) {
+            function(sel_vec, verbose = TRUE) {
                 if (
                     length(sel_vec) == 0
                 ) {
@@ -53,8 +53,6 @@ get_latest_file_name <-
                 stringr::str_detect(file_full_list, file_name)
             )
 
-        check_vector_length(file_list_selected_files)
-
         if (
             folder == FALSE
         ) {
@@ -81,7 +79,9 @@ get_latest_file_name <-
             file_list_exact_names <- file_list_selected_files
         }
 
-        check_vector_length(file_list_exact_names)
+        check_vector_length(
+            sel_vec = file_list_exact_names,
+            verbose = verbose)
 
         if (
             length(file_list_exact_names) == 1
