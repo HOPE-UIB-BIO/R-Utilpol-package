@@ -22,7 +22,8 @@ get_latest_file <-
         file_last_name <-
             get_latest_file_name(
                 file_name = file_name,
-                dir = dir
+                dir = dir,
+                verbose = verbose
             )
 
         if (
