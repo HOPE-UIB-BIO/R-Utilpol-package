@@ -4,7 +4,7 @@
 #' @param verbose Logical. Should there be output message?
 #' @return Object of latest version of the `file_name`
 #' @description Look into the folder `dir` and find the version of the file with
-#'  the most recent date and load it
+#'  the most recent date and load it. If there is not such file, return NA.
 #' @export
 get_latest_file <-
     function(file_name,
@@ -31,17 +31,17 @@ get_latest_file <-
             if (
                 verbose == TRUE
             ) {
-                stop(
-                    paste(
+                output_warning(
+                    msg = paste(
                         "Did not detect file",
                         paste_as_vector(file_name),
                         "in",
                         paste_as_vector(dir)
                     )
                 )
-            } else {
-                stop_quietly()
             }
+
+            return(NA)
         }
 
         file_format <-
