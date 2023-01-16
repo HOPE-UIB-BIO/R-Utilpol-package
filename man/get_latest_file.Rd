@@ -18,5 +18,5 @@ Object of latest version of the \code{file_name}
 }
 \description{
 Look into the folder \code{dir} and find the version of the file with
-the most recent date and load it
+the most recent date and load it. If there is not such file, return NA.
 }
