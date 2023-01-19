@@ -2,6 +2,7 @@
 
 export("%>%")
 export(add_slash_to_path)
+export(arrange_plotlist)
 export(check_class)
 export(check_col_names)
 export(check_color)
