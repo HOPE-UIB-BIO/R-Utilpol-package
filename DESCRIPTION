@@ -22,4 +22,5 @@ Imports:
     rlang,
     stringr,
     usethis,
-    waldo
+    waldo,
+    zip
