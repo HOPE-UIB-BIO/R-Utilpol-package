@@ -19,6 +19,7 @@ Imports:
     knitr,
     magrittr,
     qs,
+    R.utils,
     readr,
     rlang,
     stringr,
