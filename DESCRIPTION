@@ -14,6 +14,7 @@ RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Imports: 
     assertthat,
+    ggpubr,
     grDevices,
     knitr,
     magrittr,
@@ -22,4 +23,5 @@ Imports:
     rlang,
     stringr,
     usethis,
-    waldo
+    waldo,
+    zip
