@@ -4,13 +4,7 @@
 \alias{do_in_time}
 \title{Evaluate an expression and interrupts it if it takes too long}
 \usage{
-do_in_time(
-  expr,
-  envir = parent.frame(),
-  timeout,
-  onTimeout = c("error", "warning", "silent"),
-  ...
-)
+do_in_time(expr, envir = parent.frame(), timeout, on_timeout = "silent", ...)
 }
 \arguments{
 \item{expr}{The R expression to be evaluated}
@@ -18,9 +12,10 @@ do_in_time(
 \item{envir}{The environment in which the expression should be evaluated}
 
 \item{timeout}{A numeric specifying the maximum number of seconds the
-expression is allowed to run before being interrupted by the timeout}
+expression is allowed to run before being interrupted by the timeout see
+\code{\link[R.utils:withTimeout]{R.utils::withTimeout()}} for more information. Defaul is \code{"silent"}}
 
-\item{onTimeout}{A character specifying what action to take if
+\item{on_timeout}{A character specifying what action to take if
 a `timeout`` event occurs}
 
 \item{...}{other parameters passed to \code{R.utils::withTimeout()}}
