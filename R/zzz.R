@@ -8,7 +8,7 @@
             "\n",
             paste(
                 "This package is under active development.",
-                "Therefore, the package is subject to chnage."
+                "Therefore, the package is subject to change."
             )
         ),
         appendLF = TRUE
