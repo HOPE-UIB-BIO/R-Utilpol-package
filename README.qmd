@@ -45,8 +45,104 @@ The main purpose of {RUtilpol} is to provide utility (helper) functions. All fun
 
 ### File management
 
-```{r}
+The file management system is created in order to load the most latest version of a file. In addition, while saving the file, it will overwrite ONLY if the file changes since the latest version.
 
+```{r save-file}
+# load {RUtilpol}
+library(RUtilpol, verbose = FALSE)
+# load {tidyverse}
+library(tidyverse, verbose = FALSE)
+# load {here} for better file navigation
+library(here, verbose = FALSE)
+
+# use the build-in dataset of `mtcars`
+mtcars_to_use <- mtcars
+
+RUtilpol::save_latest_file(
+  object_to_save = mtcars_to_use,
+  dir = here::here()
+)
+
+list.files(
+  here::here()
+) %>%
+  stringr::str_subset(pattern = "mtcars_to_use")
+```
+
+Now we can load the file back and compare that it is truly the same dataset
+
+```{r load-and-compare}
+# load waldo to compare files
+library(waldo, verbose = FALSE)
+
+# load the data back to R
+mtcars_loaded <-
+  RUtilpol::get_latest_file(
+    file_name = "mtcars_to_use",
+    dir = here::here()
+  )
+
+# compare files
+waldo::compare(
+  x = mtcars_to_use,
+  y = mtcars_loaded
+)
+```
+
+Let's alter the data and try to save it again.
+
+```{r overwrite-file}
+# edit the `mtcars` datasets
+mtcars_to_use$mpg <- mtcars_to_use$mpg - mean(mtcars_to_use$mpg)  
+
+# save
+RUtilpol::save_latest_file(
+  object_to_save = mtcars_to_use,
+  dir = here::here()
+)
+```
+
+The function will overwrite the file unless there is a change of date, in which case, it will create a new file 
+
+```{r verwite-as-new}
+# edit the `mtcars` datasets
+mtcars_to_use$disp <- mtcars_to_use$disp - mean(mtcars_to_use$disp)  
+
+# save
+RUtilpol::save_latest_file(
+  object_to_save = mtcars_to_use,
+  dir = here::here(),
+  current_date = "3000-01-01"
+)
+
+# check the files
+list.files(
+  here::here()
+) %>%
+  stringr::str_subset(pattern = "mtcars_to_use")
+
+# load the data back to R. It will load the one with the most recent date
+mtcars_loaded <-
+  RUtilpol::get_latest_file(
+    file_name = "mtcars_to_use",
+    dir = here::here()
+  )
+```
+
+A user can also specify several arguments as the name of the file (it is the same as the object name by default), the format of the file (`rds` as default), etc. Check the function documentation by calling `?RUtilpol::save_latest_file()` 
+
+```{r file-formats}
+# save the file with the `qs` format (fast and well-compressed)
+RUtilpol::save_latest_file(
+ object_to_save = mtcars_to_use,
+ file_name = "mtcars_qs",
+ prefered_format = "qs"
+)
+
+list.files(
+  here::here()
+) %>%
+  stringr::str_subset(pattern = "mtcars_qs")
 ```
 
 ### Extraction of spatial information
