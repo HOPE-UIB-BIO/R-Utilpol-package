@@ -22,13 +22,13 @@ R-Utilpol is an R package proving utility functions for package development.
 
 ## WARNING
 
-This package is currently under heavy development.
+:bangbang: This package is currently under heavy development. :bangbang:
 
 ## Installation
 
 You can install the development version of RUtilpol from [GitHub](https://github.com/) with:
 
 ```{r install, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("HOPE-UIB-BIO/R-Utilpol-package")
+# install.packages("remotes")
+remotes::install_github("HOPE-UIB-BIO/R-Utilpol-package")
 ```
