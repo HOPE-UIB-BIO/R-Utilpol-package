@@ -85,9 +85,9 @@ geo_assign_value <-
 
     stop_if_not(
       var %in% names(data_with_value),
-      true_msg = paste("Selected shapefile resulted in the selected value:", var),
+      true_msg = paste("Selected file resulted in the selected value:", var),
       false_msg = paste(
-        "Selected shapefile does not contains value:", var
+        "Selected file does not contains value:", var
       )
     )
 
