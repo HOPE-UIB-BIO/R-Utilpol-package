@@ -2,7 +2,7 @@
 format: gfm
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -104,7 +104,7 @@ RUtilpol::save_latest_file(
 
 The function will overwrite the file unless there is a change of date, in which case, it will create a new file 
 
-```{r verwite-as-new}
+```{r rewrite-as-new}
 # edit the `mtcars` datasets
 mtcars_to_use$disp <- mtcars_to_use$disp - mean(mtcars_to_use$disp)  
 
@@ -145,8 +145,137 @@ list.files(
   stringr::str_subset(pattern = "mtcars_qs")
 ```
 
+
+```{r remove-files, include = FALSE}
+list.files(
+  here::here(),
+  full.names = TRUE
+) %>%
+  stringr::str_subset(pattern = "mtcars") %>%
+  file.remove()
+```
+
 ### Extraction of spatial information
 
-```{r}
+The is only one main funcion `RUtilpol::geo_assign_value()`, which is created to help asinging values from shapefiles and TIF files to tbular data with points (lat & long coordinates).
+
+#### Shapefiles
+
+In order to demonstrate the usage with shapefile, we used the build-in North Carolina SIDS dataset from {sf} package.  
+
+```{r shapefile-sf-example}
+# load the {sf} package for shapefile manipulation
+library(sf)
+
+# get {sf} example data
+sf_example_data <-
+  sf::st_read(system.file("shape/nc.shp", package = "sf"))
+
+summary(sf_example_data)
+
+names(sf_example_data)
+
+plot(sf_example_data, max.plot = 14)
+```
+
+Let's imagine we want to extract the value of `SID74` for a grid of 0.1 degree.
+
+```{r shapefile-assing-data}
+# make a table for the extend of the shapefile example shapefile
+data_dummy_shapefile <-
+  expand.grid(
+    long = seq(-84, -75, 0.1),
+    lat = seq(33, 37, 0.1)
+  ) %>%
+  as.data.frame() %>%
+  tibble::as_tibble()
+
+dplyr::glimpse(data_dummy_shapefile)
+
+# assing values of `SID74` to points from `data_dummy_shapefile`
+data_with_values_shapefile <-
+  RUtilpol::geo_assign_value(
+    data_source = data_dummy_shapefile, # the data.frame we want to assing values to
+    sel_method = "shapefile", # the format of the file, we want to use
+    dir = system.file("shape", package = "sf"), # the folder to look for the file
+    file_name = "nc", # name of the file to use
+    var = "SID74" # the name of the variabe in the shapefile to use 
+  ) %>%
+  tidyr::drop_na(SID74) # drop all NA values
+
+dplyr::glimpse(data_with_values_shapefile)
+
+# plot results
+ggplot2::ggplot(
+  data = data_with_values_shapefile,
+  mapping = ggplot2::aes(
+    long, lat,
+    col = SID74
+  )
+) +
+  ggplot2::geom_point() +
+  ggplot2::coord_quickmap() +
+  ggplot2::scale_color_viridis_c()
+
+```
+
+#### TIF files
+
+In order to demonstrate the usage with TIF file, we used the build-in elevational dataset from {terra} package. 
+
+```{r tif-files}
+# load {terra} package to obtain example of TIF file
+library(terra)
+
+# load build-in tif file
+tiff_example <- 
+  terra::rast(system.file("ex/elev.tif", package = "terra"))
+
+summary(tiff_example)
+
+plot(tiff_example)
+```
+
+Let's imagine we want to extract the elevation for a grid of 0.01 degree.
+
+```{r tif-file-assing-data}
+# make a table for the extend of the shapefile example shapefile
+data_dummy_tif <-
+  expand.grid(
+    long = seq(5, 6.5, 0.01),
+    lat = seq(49, 51, 0.01)
+  ) %>%
+  as.data.frame() %>%
+  tibble::as_tibble()
+
+dplyr::glimpse(data_dummy_tif)
+
+# assing values of `SID74` to points from `data_dummy_tif`
+data_with_values_tif <-
+  RUtilpol::geo_assign_value(
+    data_source = data_dummy_tif, # the data.frame we want to assing values to
+    sel_method = "tif", # the format of the file, we want to use
+    dir = system.file("ex", package = "terra"), # the folder to look for the file
+    file_name = "elev", # name of the file to use
+    tif_fill_na = FALSE # use only exact values
+  ) %>%
+  dplyr::rename(
+    elevation = raster_values
+  ) %>%
+  tidyr::drop_na(elevation) # drop all NA values
+
+dplyr::glimpse(data_with_values_tif)
+
+# plot results
+ggplot2::ggplot(
+  data = data_with_values_tif,
+  mapping = ggplot2::aes(
+    long, lat,
+    col = elevation
+  )
+) +
+  ggplot2::geom_point(size = 0.5) +
+  ggplot2::coord_quickmap() +
+  ggplot2::scale_color_viridis_c()
 
 ```
