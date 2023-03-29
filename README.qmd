@@ -1,0 +1,281 @@
+---
+format: gfm
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# RUtilpol
+
+<!-- badges: start -->
+[![CRAN-status](https://www.r-pkg.org/badges/version/RUtilpol)](https://CRAN.R-project.org/package=RUtilpol)
+[![R-CMD-check](https://github.com/HOPE-UIB-BIO/R-Utilpol-package/workflows/R-CMD-check/badge.svg)](https://github.com/HOPE-UIB-BIO/R-Utilpol-package/actions)
+<!-- badges: end -->
+
+R-Utilpol is an R package proving utility functions for package development.
+
+## WARNING
+
+:bangbang: This package is under active development. Therefore, the package is subject to change. :bangbang:
+
+## Installation
+
+You can install the development version of RUtilpol from [GitHub](https://github.com/) with:
+
+```{r install, eval = FALSE}
+# install.packages("remotes")
+remotes::install_github("HOPE-UIB-BIO/R-Utilpol-package")
+```
+
+## Usage
+
+The main purpose of {RUtilpol} is to provide utility (helper) functions. All functions can be grouped into 3 main categories:
+
+1. **Package development** - Function used within other packages (e.g., `RUtilpol::check_class()` for safety check, `RUtilpol::output_warning()` - for console message, `RUtilpol::replace_null_with_na()` for data wrangling ,...).
+
+2. [**File management**](#file-management) - Functions for saving and loading functions for better handling of files in large projects (see examples below).
+
+3. [**Extraction of spatial information**](#extraction-of-spatial-information) - Functions to assign information to points based on a raster of shapefile (see examples below).
+
+### File management
+
+The file management system is created in order to load the most latest version of a file. In addition, while saving the file, it will overwrite ONLY if the file changes since the latest version.
+
+```{r save-file}
+# load {RUtilpol}
+library(RUtilpol, verbose = FALSE)
+# load {tidyverse}
+library(tidyverse, verbose = FALSE)
+# load {here} for better file navigation
+library(here, verbose = FALSE)
+
+# use the build-in dataset of `mtcars`
+mtcars_to_use <- mtcars
+
+RUtilpol::save_latest_file(
+  object_to_save = mtcars_to_use,
+  dir = here::here()
+)
+
+list.files(
+  here::here()
+) %>%
+  stringr::str_subset(pattern = "mtcars_to_use")
+```
+
+Now we can load the file back and compare that it is truly the same dataset
+
+```{r load-and-compare}
+# load waldo to compare files
+library(waldo, verbose = FALSE)
+
+# load the data back to R
+mtcars_loaded <-
+  RUtilpol::get_latest_file(
+    file_name = "mtcars_to_use",
+    dir = here::here()
+  )
+
+# compare files
+waldo::compare(
+  x = mtcars_to_use,
+  y = mtcars_loaded
+)
+```
+
+Let's alter the data and try to save it again.
+
+```{r overwrite-file}
+# edit the `mtcars` datasets
+mtcars_to_use$mpg <- mtcars_to_use$mpg - mean(mtcars_to_use$mpg)  
+
+# save
+RUtilpol::save_latest_file(
+  object_to_save = mtcars_to_use,
+  dir = here::here()
+)
+```
+
+The function will overwrite the file unless there is a change of date, in which case, it will create a new file 
+
+```{r rewrite-as-new}
+# edit the `mtcars` datasets
+mtcars_to_use$disp <- mtcars_to_use$disp - mean(mtcars_to_use$disp)  
+
+# save
+RUtilpol::save_latest_file(
+  object_to_save = mtcars_to_use,
+  dir = here::here(),
+  current_date = "3000-01-01"
+)
+
+# check the files
+list.files(
+  here::here()
+) %>%
+  stringr::str_subset(pattern = "mtcars_to_use")
+
+# load the data back to R. It will load the one with the most recent date
+mtcars_loaded <-
+  RUtilpol::get_latest_file(
+    file_name = "mtcars_to_use",
+    dir = here::here()
+  )
+```
+
+A user can also specify several arguments as the name of the file (it is the same as the object name by default), the format of the file (`rds` as default), etc. Check the function documentation by calling `?RUtilpol::save_latest_file()` 
+
+```{r file-formats}
+# save the file with the `qs` format (fast and well-compressed)
+RUtilpol::save_latest_file(
+ object_to_save = mtcars_to_use,
+ file_name = "mtcars_qs",
+ prefered_format = "qs"
+)
+
+list.files(
+  here::here()
+) %>%
+  stringr::str_subset(pattern = "mtcars_qs")
+```
+
+
+```{r remove-files, include = FALSE}
+list.files(
+  here::here(),
+  full.names = TRUE
+) %>%
+  stringr::str_subset(pattern = "mtcars") %>%
+  file.remove()
+```
+
+### Extraction of spatial information
+
+The is only one main funcion `RUtilpol::geo_assign_value()`, which is created to help asinging values from shapefiles and TIF files to tbular data with points (lat & long coordinates).
+
+#### Shapefiles
+
+In order to demonstrate the usage with shapefile, we used the build-in North Carolina SIDS dataset from {sf} package.  
+
+```{r shapefile-sf-example}
+# load the {sf} package for shapefile manipulation
+library(sf)
+
+# get {sf} example data
+sf_example_data <-
+  sf::st_read(system.file("shape/nc.shp", package = "sf"))
+
+summary(sf_example_data)
+
+names(sf_example_data)
+
+plot(sf_example_data, max.plot = 14)
+```
+
+Let's imagine we want to extract the value of `SID74` for a grid of 0.1 degree.
+
+```{r shapefile-assing-data}
+# make a table for the extend of the shapefile example shapefile
+data_dummy_shapefile <-
+  expand.grid(
+    long = seq(-84, -75, 0.1),
+    lat = seq(33, 37, 0.1)
+  ) %>%
+  as.data.frame() %>%
+  tibble::as_tibble()
+
+dplyr::glimpse(data_dummy_shapefile)
+
+# assing values of `SID74` to points from `data_dummy_shapefile`
+data_with_values_shapefile <-
+  RUtilpol::geo_assign_value(
+    data_source = data_dummy_shapefile, # the data.frame we want to assing values to
+    sel_method = "shapefile", # the format of the file, we want to use
+    dir = system.file("shape", package = "sf"), # the folder to look for the file
+    file_name = "nc", # name of the file to use
+    var = "SID74" # the name of the variabe in the shapefile to use 
+  ) %>%
+  tidyr::drop_na(SID74) # drop all NA values
+
+dplyr::glimpse(data_with_values_shapefile)
+
+# plot results
+ggplot2::ggplot(
+  data = data_with_values_shapefile,
+  mapping = ggplot2::aes(
+    long, lat,
+    col = SID74
+  )
+) +
+  ggplot2::geom_point() +
+  ggplot2::coord_quickmap() +
+  ggplot2::scale_color_viridis_c()
+
+```
+
+#### TIF files
+
+In order to demonstrate the usage with TIF file, we used the build-in elevational dataset from {terra} package. 
+
+```{r tif-files}
+# load {terra} package to obtain example of TIF file
+library(terra)
+
+# load build-in tif file
+tiff_example <- 
+  terra::rast(system.file("ex/elev.tif", package = "terra"))
+
+summary(tiff_example)
+
+plot(tiff_example)
+```
+
+Let's imagine we want to extract the elevation for a grid of 0.01 degree.
+
+```{r tif-file-assing-data}
+# make a table for the extend of the shapefile example shapefile
+data_dummy_tif <-
+  expand.grid(
+    long = seq(5, 6.5, 0.01),
+    lat = seq(49, 51, 0.01)
+  ) %>%
+  as.data.frame() %>%
+  tibble::as_tibble()
+
+dplyr::glimpse(data_dummy_tif)
+
+# assing values of `SID74` to points from `data_dummy_tif`
+data_with_values_tif <-
+  RUtilpol::geo_assign_value(
+    data_source = data_dummy_tif, # the data.frame we want to assing values to
+    sel_method = "tif", # the format of the file, we want to use
+    dir = system.file("ex", package = "terra"), # the folder to look for the file
+    file_name = "elev", # name of the file to use
+    tif_fill_na = FALSE # use only exact values
+  ) %>%
+  dplyr::rename(
+    elevation = raster_values
+  ) %>%
+  tidyr::drop_na(elevation) # drop all NA values
+
+dplyr::glimpse(data_with_values_tif)
+
+# plot results
+ggplot2::ggplot(
+  data = data_with_values_tif,
+  mapping = ggplot2::aes(
+    long, lat,
+    col = elevation
+  )
+) +
+  ggplot2::geom_point(size = 0.5) +
+  ggplot2::coord_quickmap() +
+  ggplot2::scale_color_viridis_c()
+
+```
