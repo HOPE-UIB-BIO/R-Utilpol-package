@@ -13,6 +13,7 @@ Imports:
     dplyr,
     ggpubr,
     grDevices,
+    here,
     knitr,
     magrittr,
     purrr,
@@ -34,5 +35,3 @@ Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-Suggest:
-    here
