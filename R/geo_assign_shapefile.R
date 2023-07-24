@@ -20,28 +20,39 @@ geo_assign_shapefile <-
       dplyr::select("long", "lat") %>%
       as.data.frame()
 
-    # transform into the Spatial polygon
-    sp::coordinates(data_coord) <- ~ long + lat
+    data_coord_sf <-
+      sf::st_as_sf(
+        data_coord,
+        coords = c("long", "lat"),
+        crs = "+proj=longlat +datum=WGS84"
+      )
 
-    # if 'shapefile' loaded using 'sf' package, transfer back to 'sp'
+    # Check if the projection is "+proj=longlat +datum=WGS84"
     if (
-      "sf" %in% class(shapefile)
+      sf::st_crs(shapefile)$proj4string != "+proj=longlat +datum=WGS84"
     ) {
-      shapefile <- sf::as_Spatial(shapefile)
+      # Change the projection to "+proj=longlat +datum=WGS84"
+      shapefile <-
+        sf::st_transform(shapefile, crs = "+proj=longlat +datum=WGS84")
     }
 
-    # silence this line as CRS seems to be obsolete
-    # sp::proj4string(data_coord) <- rgdal::CRSargs(sp::CRS(sp::proj4string(shapefile)))
+    shapefile <-
+      sf::st_make_valid(shapefile)
 
-    # assumes projections are the same
-    suppressWarnings(
-      sp::proj4string(data_coord) <- sp::proj4string(shapefile)
-    )
+    # Assign each row a value from the shapefile
+    data_coord_with_values <-
+      sf::st_join(
+        data_coord_sf,
+        shapefile,
+        join = sf::st_within
+      )
 
     # combine the extracted values and original data
     data_res <-
       data_source %>%
-      dplyr::bind_cols(sp::over(x = data_coord, y = shapefile)) %>%
+      dplyr::bind_cols(
+        sf::st_drop_geometry(data_coord_with_values)
+      ) %>%
       tibble::as_tibble()
 
     return(data_res)

@@ -1,22 +1,19 @@
-Package: RUtilpol
 Type: Package
+Package: RUtilpol
 Title: R-Utilpol: Utility Functions For Package Development
-Version: 0.0.0.9000
+Version: 0.0.0.9001
+Authors@R: 
+    person("Ondrej", "Mottl", , "ondrej.mottl@gmail.com", role = c("aut", "cre"))
 Maintainer: Ondrej Mottl <ondrej.mottl@gmail.com>
-Authors@R: person("Ondrej", "Mottl", email = "ondrej.mottl@gmail.com", role = c("aut","cre"))
-Description: R-Utilpol is an R package proving utility functions for package development.
+Description: R-Utilpol is an R package proving utility functions for
+    package development.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-Language: en-GB
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
-VignetteBuilder: knitr
 Imports: 
     assertthat,
     dplyr,
     ggpubr,
     grDevices,
+    here,
     knitr,
     magrittr,
     purrr,
@@ -31,3 +28,10 @@ Imports:
     usethis,
     waldo,
     zip
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+Language: en-GB
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
