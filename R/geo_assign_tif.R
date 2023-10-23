@@ -68,6 +68,12 @@ geo_assign_tif <-
       raster_value[raster_value == na_as_value] <- NA
     }
 
+    data_with_values <-
+      data_source %>%
+      dplyr::mutate(
+        raster_values = raster_value
+      )
+
     # search for the closest value for NAs
     if (
       any(is.na(raster_value)) && isTRUE(fill_na)
@@ -83,64 +89,75 @@ geo_assign_tif <-
           paste("distance =", buffer_value, "m"), "\n"
         )
 
-        point_df_sub <-
-          data_source_coord[is.na(raster_value), ] %>%
-          as.data.frame()
-
-        sp::coordinates(point_df_sub) <- ~ long + lat
-
-        raster_value_est <-
-          raster::extract(raster_object,
-            point_df_sub,
-            buffer = buffer_value,
-            small = TRUE
-          )
-
-        # replace the selected value with NA
-        if (
-          isFALSE(is.null(na_as_value))
-        ) {
-          raster_value_est <-
-            purrr::map(
-              .x = raster_value_est,
+        data_with_values <-
+          data_with_values %>%
+          dplyr::mutate(
+            raster_values = purrr::pmap(
+              .progress = "Searching for closest value",
+              .l = list(
+                long,
+                lat,
+                raster_values
+              ),
               .f = ~ {
-                .x[.x == na_as_value] <- NA
+                if (
+                  isFALSE(is.na(..3))
+                ) {
+                  return(..3)
+                }
 
-                return(.x)
+                # Create a small buffer around the point to search for non-NA values
+                search_window <-
+                  terra::buffer(
+                    terra::vect(
+                      data.frame(
+                        long = ..1,
+                        lat = ..2
+                      ),
+                      geom = c("long", "lat")
+                    ),
+                    width = 500
+                  )
+                # Extract values within the search window
+                window_values <- terra::extract(raster_object, search_window)
+
+                # Find the nearest non-NA value
+                non_na_indices <- which(!is.na(window_values[, 2]))
+
+                raster_value_est <-
+                  table(non_na_indices) %>%
+                  sort(., decreasing = TRUE) %>%
+                  names() %>%
+                  purrr::pluck(1) %>%
+                  as.double()
+
+                # replace the selected value with NA
+                if (
+                  isFALSE(is.null(na_as_value))
+                ) {
+                  raster_value_est <-
+                    purrr::map(
+                      .x = raster_value_est,
+                      .f = ~ {
+                        .x[.x == na_as_value] <- NA
+
+                        return(.x)
+                      }
+                    )
+                }
+
+                return(raster_value_est)
               }
             )
-        }
-
-        raster_value_sub <-
-          purrr::map_dbl(
-            .x = raster_value_est,
-            .f = ~ {
-              res <- table(.x) %>%
-                sort(., decreasing = TRUE) %>%
-                names() %>%
-                purrr::pluck(1) %>%
-                as.double()
-
-              ifelse(is.null(res) == TRUE, NA_real_, res) %>%
-                return()
-            }
           )
 
-        raster_value[is.na(raster_value)] <- raster_value_sub
-
         if (
-          all(!is.na(raster_value))
+          all(!is.na(data_with_values$raster_value))
         ) {
           break
         }
       }
     }
-
-    data_with_values <-
-      data_source %>%
-      dplyr::mutate(
-        raster_values = raster_value
-      )
 
     check_col_names("data_with_values", "raster_values")
 
