@@ -49,17 +49,17 @@ geo_assign_tif <-
       dplyr::select("lat", "long")
 
     # Create a raster stack of your raster file
-    raster_object <- raster::raster(tif_file_name)
+    raster_object <- terra::rast(tif_file_name)
 
     # Read point data, and convert them into spatial points data frame.
     point_df <-
-      data_source_coord %>%
-      as.data.frame()
-
-    sp::coordinates(point_df) <- ~ long + lat
+      terra::vect(data_source_coord, geom = c("long", "lat"))
 
     # Extract raster value by points
-    raster_value <- raster::extract(raster_object, point_df)
+    raster_value <-
+      terra::extract(raster_object, point_df) %>%
+      tibble::column_to_rownames("ID") %>%
+      dplyr::pull(1)
 
     # replace the selected value with NA
     if (
