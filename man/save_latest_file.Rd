@@ -10,7 +10,6 @@ save_latest_file(
   dir = here::here(),
   current_date = Sys.Date(),
   prefered_format = c("rds", "qs", "csv"),
-  preset = c("high", "balanced", "fast", "uncompressed", "archive"),
   use_sha = TRUE,
   verbose = TRUE
 )
@@ -27,10 +26,6 @@ file will be named as \code{object_to_save}}
 \item{current_date}{Character. Current date}
 
 \item{prefered_format}{Character. format to save as: "rds", "qs" or "csv"}
-
-\item{preset}{Character. Used for "qs" only.
-One of "fast", "balanced", "high" (default), "archive",
-"uncompressed". See `qs::qsave()`` for details}
 
 \item{use_sha}{Logical. If True, the file will be given SHA code in the
 file name. when comapring files, if file has SHA code, the comparison can
@@ -52,5 +47,5 @@ Therefore, it is possible to use just \code{file_name} (in quotes) with the name
 of the object present in the parent frame without the \code{object_to_save}.
 }
 \seealso{
-\code{\link[qs:qsave]{qs::qsave()}} \code{\link[readr:read_rds]{readr::write_rds()}}
+\code{\link[qs2:qs_save]{qs2::qs_save()}} \code{\link[readr:read_rds]{readr::write_rds()}}
 }
